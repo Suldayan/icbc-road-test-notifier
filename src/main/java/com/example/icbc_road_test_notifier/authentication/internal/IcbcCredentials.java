@@ -1,4 +1,4 @@
-package com.example.icbc_road_test_notifier.scraper.internal;
+package com.example.icbc_road_test_notifier.authentication.internal;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

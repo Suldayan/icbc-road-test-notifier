@@ -1,4 +1,4 @@
-package com.example.icbc_road_test_notifier.scraper.internal;
+package com.example.icbc_road_test_notifier.authentication.internal;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.time.Duration;
 
 @ConfigurationProperties(prefix = "icbc.scraper")
-public record IcbcScraperProperties(
+public record IcbcAuthenticationProperties(
         @NotBlank(message = "Login URL cannot be blank")
         String loginUrl,
 
@@ -22,7 +22,7 @@ public record IcbcScraperProperties(
 
         Duration retryDelay
 ) {
-    public IcbcScraperProperties {
+    public IcbcAuthenticationProperties {
         if (loginUrl == null || loginUrl.isBlank()) {
             loginUrl = "https://onlinebusiness.icbc.com/webdeas-ui/login;type=driver";
         }

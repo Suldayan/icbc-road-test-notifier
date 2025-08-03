@@ -1,6 +1,6 @@
-package com.example.icbc_road_test_notifier.scraper.internal;
+package com.example.icbc_road_test_notifier.authentication.internal;
 
-import com.example.icbc_road_test_notifier.scraper.IcbcScrapingService;
+import com.example.icbc_road_test_notifier.authentication.AuthenticationService;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.TimeoutError;
 import jakarta.validation.ConstraintViolation;
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class IcbcScrapingServiceImpl implements IcbcScrapingService {
-    private final IcbcScraperProperties properties;
+public class IcbcAuthenticationServiceImpl implements AuthenticationService {
+    private final IcbcAuthenticationProperties properties;
     private final Validator validator;
 
     private static final class Selectors {
@@ -39,7 +39,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
 
     @Override
     @Retryable(
-            retryFor = {IcbcScrapingException.class, TimeoutError.class},
+            retryFor = {IcbcAuthenticationException.class, TimeoutError.class},
             maxAttemptsExpression = "#{@icbcScraperProperties.maxRetryAttempts}",
             backoff = @Backoff(delayExpression = "#{@icbcScraperProperties.retryDelay.toMillis()}")
     )
@@ -60,14 +60,14 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
         } catch (TimeoutError e) {
             String errorMsg = String.format("Login process timed out for user: %s", maskedLastName);
             log.error(errorMsg, e);
-            throw new IcbcScrapingException(errorMsg, e);
-        } catch (IcbcScrapingException e) {
+            throw new IcbcAuthenticationException(errorMsg, e);
+        } catch (IcbcAuthenticationException e) {
             log.error("Login failed for user: {} - {}", maskedLastName, e.getMessage());
             throw e;
         } catch (Exception e) {
             String errorMsg = String.format("Login failed due to unexpected error for user: %s", maskedLastName);
             log.error(errorMsg, e);
-            throw new IcbcScrapingException(errorMsg, e);
+            throw new IcbcAuthenticationException(errorMsg, e);
         }
     }
 
@@ -80,7 +80,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
                     .collect(Collectors.joining(", "));
 
             log.error("Invalid credentials provided: {}", errorMessages);
-            throw new IcbcScrapingException("Invalid credentials: " + errorMessages);
+            throw new IcbcAuthenticationException("Invalid credentials: " + errorMessages);
         }
     }
 
@@ -96,7 +96,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
             log.debug("Login page loaded successfully");
 
         } catch (TimeoutError e) {
-            throw new IcbcScrapingException("Login form did not load within expected time", e);
+            throw new IcbcAuthenticationException("Login form did not load within expected time", e);
         }
     }
 
@@ -122,7 +122,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
             verifyFieldsFilled(page, credentials);
 
         } catch (Exception e) {
-            throw new IcbcScrapingException("Failed to fill login credentials", e);
+            throw new IcbcAuthenticationException("Failed to fill login credentials", e);
         }
     }
 
@@ -134,7 +134,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
         if (!credentials.lastName().equals(lastNameValue) ||
                 !credentials.driversLicenseNumber().equals(licenseValue) ||
                 !credentials.keyword().equals(keywordValue)) {
-            throw new IcbcScrapingException("Form fields were not filled correctly");
+            throw new IcbcAuthenticationException("Form fields were not filled correctly");
         }
     }
 
@@ -154,15 +154,15 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
 
             // Verify checkbox is checked using the hidden input
             if (!page.isChecked(Selectors.TERMS_CHECKBOX_INPUT)) {
-                throw new IcbcScrapingException("Terms and conditions checkbox could not be checked");
+                throw new IcbcAuthenticationException("Terms and conditions checkbox could not be checked");
             }
 
             log.debug("Terms and conditions accepted");
 
         } catch (TimeoutError e) {
-            throw new IcbcScrapingException("Terms and conditions checkbox not found within expected time", e);
+            throw new IcbcAuthenticationException("Terms and conditions checkbox not found within expected time", e);
         } catch (Exception e) {
-            throw new IcbcScrapingException("Failed to accept terms and conditions", e);
+            throw new IcbcAuthenticationException("Failed to accept terms and conditions", e);
         }
     }
 
@@ -179,9 +179,9 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
             log.debug("Login form submitted");
 
         } catch (TimeoutError e) {
-            throw new IcbcScrapingException("Sign in button not found within expected time", e);
+            throw new IcbcAuthenticationException("Sign in button not found within expected time", e);
         } catch (Exception e) {
-            throw new IcbcScrapingException("Failed to submit login form", e);
+            throw new IcbcAuthenticationException("Failed to submit login form", e);
         }
     }
 
@@ -204,7 +204,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
 
         } catch (TimeoutError e) {
             checkForLoginErrors(page);
-            throw new IcbcScrapingException("Login success could not be confirmed within expected time", e);
+            throw new IcbcAuthenticationException("Login success could not be confirmed within expected time", e);
         }
     }
 
@@ -213,7 +213,7 @@ public class IcbcScrapingServiceImpl implements IcbcScrapingService {
             String errorText = page.locator(Selectors.ERROR_MESSAGE)
                     .first()
                     .textContent();
-            throw new IcbcScrapingException("Login failed with error: " + errorText);
+            throw new IcbcAuthenticationException("Login failed with error: " + errorText);
         }
     }
 

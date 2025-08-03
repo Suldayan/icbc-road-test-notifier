@@ -1,6 +1,6 @@
-package com.example.icbc_road_test_notifier.scraper.internal;
+package com.example.icbc_road_test_notifier.authentication.internal;
 
-import com.example.icbc_road_test_notifier.scraper.IcbcScrapingService;
+import com.example.icbc_road_test_notifier.authentication.AuthenticationService;
 import com.microsoft.playwright.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -20,16 +20,16 @@ import static org.mockito.Mockito.mock;
         "icbc.scraper.max-retry-attempts=1",
         "icbc.scraper.retry-delay=PT1S"
 })
-class IcbcLoginServiceIntegrationTest {
+class IcbcAuthenticationServiceIntegrationTest {
 
     @Autowired
-    private IcbcScrapingService loginService;
+    private AuthenticationService loginService;
 
     @Autowired
     private Validator validator;
 
     @Autowired
-    private IcbcScraperProperties properties;
+    private IcbcAuthenticationProperties properties;
 
     private static Playwright playwright;
     private static Browser browser;
@@ -87,17 +87,17 @@ class IcbcLoginServiceIntegrationTest {
         @Test
         @DisplayName("Should handle navigation timeout")
         void shouldHandleNavigationTimeout() {
-            IcbcScraperProperties invalidProperties = new IcbcScraperProperties(
+            IcbcAuthenticationProperties invalidProperties = new IcbcAuthenticationProperties(
                     "https://invalid-url-that-does-not-exist.com",
                     5,
                     1,
                     properties.retryDelay()
             );
 
-            IcbcScrapingServiceImpl serviceWithInvalidUrl = new IcbcScrapingServiceImpl(invalidProperties, validator);
+            IcbcAuthenticationServiceImpl serviceWithInvalidUrl = new IcbcAuthenticationServiceImpl(invalidProperties, validator);
             IcbcCredentials validCredentials = createValidCredentials();
 
-            IcbcScrapingException exception = assertThrows(IcbcScrapingException.class, () -> {
+            IcbcAuthenticationException exception = assertThrows(IcbcAuthenticationException.class, () -> {
                 serviceWithInvalidUrl.login(page, validCredentials);
             });
 
@@ -186,7 +186,7 @@ class IcbcLoginServiceIntegrationTest {
 
             Page mockPage = mock(Page.class);
 
-            assertThrows(IcbcScrapingException.class, () -> {
+            assertThrows(IcbcAuthenticationException.class, () -> {
                 loginService.login(mockPage, invalidCredentials);
             });
         }
@@ -207,7 +207,7 @@ class IcbcLoginServiceIntegrationTest {
 
             long startTime = System.currentTimeMillis();
 
-            IcbcScrapingException exception = assertThrows(IcbcScrapingException.class, () -> {
+            IcbcAuthenticationException exception = assertThrows(IcbcAuthenticationException.class, () -> {
                 loginService.login(page, invalidCredentials);
             });
 
@@ -233,7 +233,7 @@ class IcbcLoginServiceIntegrationTest {
                     "TestKeyword"
             );
 
-            IcbcScrapingException exception = assertThrows(IcbcScrapingException.class, () -> {
+            IcbcAuthenticationException exception = assertThrows(IcbcAuthenticationException.class, () -> {
                 loginService.login(page, invalidCredentials);
             });
 
