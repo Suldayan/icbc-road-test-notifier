@@ -1,5 +1,6 @@
 package com.example.icbc_road_test_notifier.navigation.internal;
 
+import com.example.icbc_road_test_notifier.navigation.NavigationService;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -15,7 +16,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 
 @Service
 @Slf4j
-public class NavigationServiceImpl {
+public class NavigationServiceImpl implements NavigationService {
     public static final String LOGIN_URL = "https://onlinebusiness.icbc.com/webdeas-ui/login;type=driver";
     public static final int NAVIGATION_TIMEOUT = 60000;
     public static final int URL_WAIT_TIMEOUT = 30000;
@@ -24,6 +25,7 @@ public class NavigationServiceImpl {
     public static final int CLICK_DELAY = 500;
     public static final String DEBUG_SCREENSHOT_FILENAME = "debug-reschedule-button.png";
 
+    @Override
     public void authenticate(Page page, String lastName, String licenseNumber, String keyword) {
         log.debug("Authenticating user");
 
@@ -39,6 +41,7 @@ public class NavigationServiceImpl {
         log.info("Authentication successful");
     }
 
+    @Override
     public void navigateToAppointmentSection(Page page) {
         log.debug("Navigating to appointment section");
 

@@ -1,6 +1,7 @@
 package com.example.icbc_road_test_notifier.navigation.internal;
 
 import com.example.icbc_road_test_notifier.appointment.DaysOfTheWeek;
+import com.example.icbc_road_test_notifier.navigation.DaySelectionService;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -12,8 +13,9 @@ import java.util.Set;
 
 @Service
 @Slf4j
-public class DaySelectionServiceImpl {
+public class DaySelectionServiceImpl implements DaySelectionService {
 
+    @Override
     public void selectDays(Page page, Set<DaysOfTheWeek> preferredDays) {
         if (preferredDays == null || preferredDays.isEmpty()) {
             log.debug("No preferred days specified, skipping day selection");

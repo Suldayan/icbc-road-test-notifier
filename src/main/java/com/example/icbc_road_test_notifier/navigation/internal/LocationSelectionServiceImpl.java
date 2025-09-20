@@ -1,5 +1,6 @@
 package com.example.icbc_road_test_notifier.navigation.internal;
 
+import com.example.icbc_road_test_notifier.navigation.LocationSelectionService;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -14,8 +15,9 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class LocationSelectionServiceImpl {
+public class LocationSelectionServiceImpl implements LocationSelectionService {
 
+    @Override
     public void selectLocation(Page page, String locationQuery) {
         log.debug("Selecting location: {}", locationQuery);
 
@@ -149,6 +151,7 @@ public class LocationSelectionServiceImpl {
         }
     }
 
+    @Override
     public void selectSpecificLocation(Page page, String preferredLocationName) {
         log.debug("Selecting specific location: {}", preferredLocationName);
 

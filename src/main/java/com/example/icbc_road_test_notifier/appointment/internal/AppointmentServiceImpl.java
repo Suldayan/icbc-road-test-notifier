@@ -1,7 +1,7 @@
 package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.*;
-import com.example.icbc_road_test_notifier.navigation.internal.NavigationServiceImpl;
+import com.example.icbc_road_test_notifier.navigation.NavigationService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
     private final @NonNull WebDriver webDriver;
-    private final @NonNull NavigationServiceImpl navigationService;
+    private final @NonNull NavigationService navigationService;
     private final @NonNull AppointmentSearchService searchService;
     private final @NonNull ApplicationEventPublisher events;
 

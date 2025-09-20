@@ -1,8 +1,8 @@
 package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.*;
-import com.example.icbc_road_test_notifier.navigation.internal.DaySelectionServiceImpl;
-import com.example.icbc_road_test_notifier.navigation.internal.LocationSelectionServiceImpl;
+import com.example.icbc_road_test_notifier.navigation.DaySelectionService;
+import com.example.icbc_road_test_notifier.navigation.LocationSelectionService;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;
@@ -20,8 +20,8 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class AppointmentSearchServiceImpl implements AppointmentSearchService {
-    private final LocationSelectionServiceImpl locationService;
-    private final DaySelectionServiceImpl daySelectionService;
+    private final LocationSelectionService locationService;
+    private final DaySelectionService daySelectionService;
     private final AppointmentParsingService parsingService;
     private final AppointmentFilterService filterService;
     @Getter private AppointmentResults lastResults = AppointmentResults.empty();
