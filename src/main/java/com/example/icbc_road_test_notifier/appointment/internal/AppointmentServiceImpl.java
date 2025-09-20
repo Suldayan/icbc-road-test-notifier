@@ -15,7 +15,7 @@ import java.util.Set;
 @Slf4j
 @RequiredArgsConstructor
 public class AppointmentServiceImpl implements AppointmentService {
-    private final @NonNull WebDriverService webDriverService;
+    private final @NonNull WebDriver webDriver;
     private final @NonNull NavigationServiceImpl navigationService;
     private final @NonNull AppointmentSearchService searchService;
     private final @NonNull ApplicationEventPublisher events;
@@ -36,7 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 timePreference != null ? timePreference.getDisplayName() : "ANY",
                 dateRangePreference != null ? "custom range" : "no restriction");
 
-        try (WebDriverService.WebDriverSession session = webDriverService.createSession()) {
+        try (WebDriver.WebDriverSession session = webDriver.createSession()) {
             navigationService.authenticate(session.getPage(), lastName, licenseNumber, keyword);
             navigationService.navigateToAppointmentSection(session.getPage());
             searchService.configureAndSearch(session.getPage(), preferredLocation, preferredDays, timePreference, dateRangePreference);

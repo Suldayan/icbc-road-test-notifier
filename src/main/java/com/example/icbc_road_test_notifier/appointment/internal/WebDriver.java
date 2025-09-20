@@ -4,11 +4,11 @@ import com.microsoft.playwright.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 @Slf4j
-public class WebDriverService {
+public class WebDriver {
     private static final int DEFAULT_TIMEOUT_MS = 30000;
     private static final int NAVIGATION_TIMEOUT_MS = 60000;
 

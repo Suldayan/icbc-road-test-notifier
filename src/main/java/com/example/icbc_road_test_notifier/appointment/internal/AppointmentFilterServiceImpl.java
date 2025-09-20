@@ -1,5 +1,6 @@
 package com.example.icbc_road_test_notifier.appointment.internal;
 
+import com.example.icbc_road_test_notifier.appointment.AppointmentFilterService;
 import com.example.icbc_road_test_notifier.appointment.AppointmentResults;
 import com.example.icbc_road_test_notifier.appointment.DateRangePreference;
 import com.example.icbc_road_test_notifier.appointment.TimePreference;
@@ -13,11 +14,12 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class AppointmentFilterServiceImpl {
+public class AppointmentFilterServiceImpl implements AppointmentFilterService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMMM d, yyyy", Locale.ENGLISH);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("h:mm a", Locale.ENGLISH);
     private static final int DEFAULT_SLOTS_PER_DATE = 8;
 
+    @Override
     public AppointmentResults filterByPreferences(
             AppointmentResults rawResults,
             TimePreference timePreference,

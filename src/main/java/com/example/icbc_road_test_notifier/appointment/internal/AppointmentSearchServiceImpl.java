@@ -19,13 +19,14 @@ import java.util.Set;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AppointmentSearchService {
+public class AppointmentSearchServiceImpl implements AppointmentSearchService {
     private final LocationSelectionServiceImpl locationService;
     private final DaySelectionServiceImpl daySelectionService;
     private final AppointmentParsingService parsingService;
-    private final AppointmentFilterServiceImpl filterService;
+    private final AppointmentFilterService filterService;
     @Getter private AppointmentResults lastResults = AppointmentResults.empty();
 
+    @Override
     public void configureAndSearch(Page page, String preferredLocation, Set<DaysOfTheWeek> preferredDays,
                                    TimePreference timePreference, DateRangePreference dateRangePreference) {
         log.debug("Configuring search preferences");
