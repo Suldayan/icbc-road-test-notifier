@@ -3,6 +3,7 @@ package com.example.icbc_road_test_notifier.appointment.internal;
 import com.example.icbc_road_test_notifier.appointment.*;
 import com.example.icbc_road_test_notifier.navigation.DaySelectionService;
 import com.example.icbc_road_test_notifier.navigation.LocationSelectionService;
+import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.PlaywrightException;

@@ -1,6 +1,6 @@
 package com.example.icbc_road_test_notifier.navigation.internal;
 
-import com.example.icbc_road_test_notifier.appointment.DaysOfTheWeek;
+import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
 import com.example.icbc_road_test_notifier.navigation.DaySelectionService;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;

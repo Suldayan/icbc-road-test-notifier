@@ -1,9 +1,11 @@
 package com.example.icbc_road_test_notifier.appointment;
 
+import jakarta.persistence.Embeddable;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
+@Embeddable
 @RequiredArgsConstructor
 public class DateRangePreference {
     private final LocalDate startDate;

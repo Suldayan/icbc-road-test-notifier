@@ -2,6 +2,7 @@ package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.*;
 import com.example.icbc_road_test_notifier.navigation.NavigationService;
+import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

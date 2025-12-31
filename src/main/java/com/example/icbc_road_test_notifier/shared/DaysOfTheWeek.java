@@ -1,4 +1,4 @@
-package com.example.icbc_road_test_notifier.appointment;
+package com.example.icbc_road_test_notifier.shared;
 
 import lombok.Getter;
 

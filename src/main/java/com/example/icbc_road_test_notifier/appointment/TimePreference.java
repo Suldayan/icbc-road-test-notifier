@@ -1,9 +1,7 @@
 package com.example.icbc_road_test_notifier.appointment;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
 public enum TimePreference {
     MORNING("Morning", 6, 12),
@@ -14,4 +12,10 @@ public enum TimePreference {
     private final String displayName;
     private final int startHour;
     private final int endHour;
+
+    TimePreference(String displayName, int startHour, int endHour) {
+        this.displayName = displayName;
+        this.startHour = startHour;
+        this.endHour = endHour;
+    }
 }

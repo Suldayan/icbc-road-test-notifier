@@ -2,7 +2,7 @@ package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.AppointmentFound;
 import com.example.icbc_road_test_notifier.appointment.DateRangePreference;
-import com.example.icbc_road_test_notifier.appointment.DaysOfTheWeek;
+import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
 import com.example.icbc_road_test_notifier.appointment.TimePreference;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterEach;
