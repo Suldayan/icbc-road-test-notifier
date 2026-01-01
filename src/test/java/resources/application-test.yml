@@ -1,7 +1,0 @@
-icbc:
-  browser:
-    headless: false
-
-logging:
-  level:
-    com.example.icbc_road_test_notifier: DEBUG
