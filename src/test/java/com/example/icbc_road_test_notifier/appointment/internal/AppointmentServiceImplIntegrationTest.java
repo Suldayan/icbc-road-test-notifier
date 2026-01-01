@@ -1,9 +1,10 @@
 package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.AppointmentFound;
-import com.example.icbc_road_test_notifier.appointment.DateRangePreference;
+import com.example.icbc_road_test_notifier.shared.DateRangePreference;
 import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
-import com.example.icbc_road_test_notifier.appointment.TimePreference;
+import com.example.icbc_road_test_notifier.shared.TimePreference;
+import com.example.icbc_road_test_notifier.shared.IcbcConfig;
 import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,17 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(properties = {"logging.level.com.example=DEBUG"})
+@TestPropertySource(properties = {
+        "logging.level.com.example=DEBUG",
+        "icbc.last-name=TestUser",
+        "icbc.license-number=1234567",
+        "icbc.keyword=test-keyword",
+        "icbc.preferred-location=Vancouver, BC",
+        "icbc.preferred-days=MONDAY,TUESDAY",
+        "icbc.time-preference=ANY",
+        "icbc.date-range-preference.start-date=2025-01-01",
+        "icbc.date-range-preference.end-date=2025-12-31"
+})
 class AppointmentServiceImplIntegrationTest {
 
     private ApplicationEventPublisher eventPublisher;
@@ -51,17 +62,20 @@ class AppointmentServiceImplIntegrationTest {
 
     @Test
     void shouldHandleInvalidCredentials() {
+        IcbcConfig config = new IcbcConfig(
+                "",
+                "validLicense",
+                "validKeyword",
+                "vancouver",
+                Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
+                null,
+                null
+        );
+
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> appointmentService.authenticateAndSearchAppointments(
-                        "",
-                        "validLicense",
-                        "validKeyword",
-                        "vancouver",
-                        Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
-                        null,
-                        null
-                ));
+                () -> appointmentService.authenticateAndSearchAppointments(config)
+        );
 
         assertEquals("Last name is required", exception.getMessage());
         verifyNoInteractions(eventPublisher);
@@ -69,17 +83,20 @@ class AppointmentServiceImplIntegrationTest {
 
     @Test
     void shouldHandleEmptyLicenseNumber() {
+        IcbcConfig config = new IcbcConfig(
+                "Smith",
+                "",
+                "validKeyword",
+                "vancouver",
+                Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
+                null,
+                null
+        );
+
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> appointmentService.authenticateAndSearchAppointments(
-                        "Smith",
-                        "",
-                        "validKeyword",
-                        "vancouver",
-                        Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
-                        null,
-                        null
-                ));
+                () -> appointmentService.authenticateAndSearchAppointments(config)
+        );
 
         assertEquals("License number is required", exception.getMessage());
         verifyNoInteractions(eventPublisher);
@@ -87,17 +104,20 @@ class AppointmentServiceImplIntegrationTest {
 
     @Test
     void shouldHandleEmptyKeyword() {
+        IcbcConfig config = new IcbcConfig(
+                "Smith",
+                "1234567",
+                "",
+                "vancouver",
+                Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
+                null,
+                null
+        );
+
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> appointmentService.authenticateAndSearchAppointments(
-                        "Smith",
-                        "1234567",
-                        "",
-                        "vancouver",
-                        Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
-                        null,
-                        null
-                ));
+                () -> appointmentService.authenticateAndSearchAppointments(config)
+        );
 
         assertEquals("Keyword is required", exception.getMessage());
         verifyNoInteractions(eventPublisher);
@@ -137,17 +157,17 @@ class AppointmentServiceImplIntegrationTest {
     @Disabled("Disabled for development - remove when ready to test backward compatibility")
     @Test
     void shouldSupportSingleLocationMethodSignature() {
-        assertDoesNotThrow(() -> {
-            appointmentService.authenticateAndSearchAppointments(
-                    "Smith",
-                    "1234567",
-                    "keyword",
-                    "Vancouver, BC",
-                    Set.of(DaysOfTheWeek.MONDAY),
-                    null,
-                    null
-            );
-        });
+        IcbcConfig config = new IcbcConfig(
+                "Smith",
+                "1234567",
+                "keyword",
+                "Vancouver, BC",
+                Set.of(DaysOfTheWeek.MONDAY),
+                null,
+                null
+        );
+
+        assertDoesNotThrow(() -> appointmentService.authenticateAndSearchAppointments(config));
     }
 
     @Test
@@ -236,19 +256,19 @@ class AppointmentServiceImplIntegrationTest {
             return;
         }
 
-        assertDoesNotThrow(() -> {
-            appointmentService.authenticateAndSearchAppointments(
-                    testLastName,
-                    testLicense,
-                    testKeyword,
-                    "vancouver",
-                    Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
-                    TimePreference.ANY,
-                    new DateRangePreference(
-                            LocalDate.now(),
-                            LocalDate.now().plus(Period.ofDays(120)))
-            );
-        });
+        IcbcConfig config = new IcbcConfig(
+                testLastName,
+                testLicense,
+                testKeyword,
+                "vancouver",
+                Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.TUESDAY),
+                TimePreference.ANY,
+                new DateRangePreference(
+                        LocalDate.now(),
+                        LocalDate.now().plus(Period.ofDays(120)))
+        );
+
+        assertDoesNotThrow(() -> appointmentService.authenticateAndSearchAppointments(config));
 
         verify(eventPublisher, atMost(1)).publishEvent(any(AppointmentFound.class));
     }
@@ -265,17 +285,17 @@ class AppointmentServiceImplIntegrationTest {
             return;
         }
 
-        assertDoesNotThrow(() -> {
-            appointmentService.authenticateAndSearchAppointments(
-                    testLastName,
-                    testLicense,
-                    testKeyword,
-                    "North Vancouver, BC",
-                    Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.FRIDAY),
-                    null,
-                    null
-            );
-        });
+        IcbcConfig config = new IcbcConfig(
+                testLastName,
+                testLicense,
+                testKeyword,
+                "North Vancouver, BC",
+                Set.of(DaysOfTheWeek.MONDAY, DaysOfTheWeek.FRIDAY),
+                null,
+                null
+        );
+
+        assertDoesNotThrow(() -> appointmentService.authenticateAndSearchAppointments(config));
 
         verify(eventPublisher, atMost(1)).publishEvent(any(AppointmentFound.class));
     }

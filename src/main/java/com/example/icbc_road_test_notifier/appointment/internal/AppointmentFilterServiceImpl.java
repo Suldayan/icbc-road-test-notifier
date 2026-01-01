@@ -2,8 +2,8 @@ package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.AppointmentFilterService;
 import com.example.icbc_road_test_notifier.appointment.AppointmentResults;
-import com.example.icbc_road_test_notifier.appointment.DateRangePreference;
-import com.example.icbc_road_test_notifier.appointment.TimePreference;
+import com.example.icbc_road_test_notifier.shared.DateRangePreference;
+import com.example.icbc_road_test_notifier.shared.TimePreference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

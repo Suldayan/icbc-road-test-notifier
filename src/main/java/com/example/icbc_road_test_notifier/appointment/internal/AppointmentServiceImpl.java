@@ -2,15 +2,16 @@ package com.example.icbc_road_test_notifier.appointment.internal;
 
 import com.example.icbc_road_test_notifier.appointment.*;
 import com.example.icbc_road_test_notifier.navigation.NavigationService;
-import com.example.icbc_road_test_notifier.shared.DaysOfTheWeek;
+import com.example.icbc_road_test_notifier.shared.DateRangePreference;
+import com.example.icbc_road_test_notifier.shared.IcbcConfig;
+import com.example.icbc_road_test_notifier.shared.TimePreference;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -22,32 +23,41 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final @NonNull ApplicationEventPublisher events;
 
     @Override
-    public void authenticateAndSearchAppointments(
-            String lastName,
-            String licenseNumber,
-            String keyword,
-            String preferredLocation,
-            Set<DaysOfTheWeek> preferredDays,
-            TimePreference timePreference,
-            DateRangePreference dateRangePreference) {
+    public void authenticateAndSearchAppointments(@NotNull IcbcConfig config) {
+        validateInputs(config.lastName(), config.licenseNumber(), config.keyword());
 
-        validateInputs(lastName, licenseNumber, keyword);
         log.info("Starting ICBC appointment search for user: {} at location: {} with time preference: {} and date range: {}",
-                lastName, preferredLocation,
-                timePreference != null ? timePreference.getDisplayName() : "ANY",
-                dateRangePreference != null ? "custom range" : "no restriction");
+                config.lastName(),
+                config.preferredLocation(),
+                config.timePreference() != null ? config.timePreference().getDisplayName() : "ANY",
+                config.dateRangePreference() != null ? "custom range" : "no restriction");
 
         try (WebDriver.WebDriverSession session = webDriver.createSession()) {
-            navigationService.authenticate(session.getPage(), lastName, licenseNumber, keyword);
+
+            navigationService.authenticate(
+                    session.getPage(),
+                    config.lastName(),
+                    config.licenseNumber(),
+                    config.keyword()
+            );
+
             navigationService.navigateToAppointmentSection(session.getPage());
-            searchService.configureAndSearch(session.getPage(), preferredLocation, preferredDays, timePreference, dateRangePreference);
+
+            searchService.configureAndSearch(
+                    session.getPage(),
+                    config.preferredLocation(),
+                    config.preferredDays(),
+                    config.timePreference(),
+                    config.dateRangePreference()
+            );
 
             AppointmentResults results = searchService.getLastResults();
             if (results.hasAvailableAppointments()) {
-                publishAppointmentFoundEvent(results, timePreference, dateRangePreference);
+                publishAppointmentFoundEvent(results, config.timePreference(), config.dateRangePreference());
             } else {
                 log.info("No appointments found matching the specified criteria");
             }
+
         } catch (Exception e) {
             log.error("Appointment search failed: {}", e.getMessage());
             throw new RuntimeException("Appointment search failed", e);
